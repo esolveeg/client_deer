@@ -78,7 +78,7 @@
                                 </a>
                             </li>
                              <li v-for="group in groups" :key="group.id">
-                                <a @click.prevent="setGroup({id: group.id , groupName : group.groupName})">
+                                <a @click.prevent="setGroup(group)">
                                     {{group.groupName}}
                                 </a>
                             </li>
@@ -96,6 +96,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import {setGroup , goToStore} from '@/utilities/helpers.js'
 export default {
     data(){
         return {
@@ -127,45 +128,10 @@ export default {
             console.log(val)
         },
         setGroup(group){
-            const groupFilter = {
-                id : group.id,
-                name : group.groupName
-            }
-           this.$store.commit('product/groupFilter' , groupFilter)
-            if(this.$route.name !== `shop___${this.$i18n.locale}`){
-                 this.$router.push({name : `shop___${this.$i18n.locale}` , query : {group : group.id}})
-             } else {
-                  let query = this.$route.query
-                    query.group = group.id
-                 this.addParamsToLocation(query)
-             }
+            setGroup(this , group)
         },
         goToStore(){
-           this.$store.commit('product/groupFilter' , {  name : null,  id : null})
-           this.$store.commit('product/priceFrom' , null)
-           this.$store.commit('product/priceTo' , null)
-           if(this.$route.name !== `shop___${this.$i18n.locale}`){
-                this.$router.push({name : `shop___${this.$i18n.locale}` , query : {}})
-            } else {
-                this.addParamsToLocation({})
-            }
-        },
-        addParamsToLocation(params) {
-        this.$store.dispatch('product/getProducts' , params)
-        history.pushState(
-            {},
-            null,
-            this.$route.path +
-            '?' +
-            Object.keys(params)
-                .map(key => {
-                return (
-                    encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-                )
-                })
-                .join('&')
-        )
-        window.scrollTo({ top:0, behavior: 'smooth'});
+           goToStore(this)
         },
     },
     beforeMount () {
@@ -182,23 +148,7 @@ export default {
 
         })
     },
-    addParamsToLocation(params) {
-        this.$store.dispatch('product/getProducts' , params)
-        history.pushState(
-            {},
-            null,
-            this.$route.path +
-            '?' +
-            Object.keys(params)
-                .map(key => {
-                return (
-                    encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-                )
-                })
-                .join('&')
-        )
-        window.scrollTo({ top:0, behavior: 'smooth'});
-    },
+   
     beforeDestroy() {
         window.removeEventListener('scroll', this.handleScroll);
     }

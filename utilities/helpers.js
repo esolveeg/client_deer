@@ -14,12 +14,14 @@ export const init  =  async ctx =>{
     
   }
 
-export const addParamsToLocation = (params , store) => {
-    store.dispatch('product/get' , params)
+
+
+ export const  addParamsToLocation = (ctx , params) => {
+    ctx.$store.dispatch('product/getProducts' , params)
     history.pushState(
         {},
         null,
-        this.$route.path +
+        ctx.$route.path +
         '?' +
         Object.keys(params)
             .map(key => {
@@ -30,4 +32,28 @@ export const addParamsToLocation = (params , store) => {
             .join('&')
     )
     window.scrollTo({ top:0, behavior: 'smooth'});
+    }
+    export const goToStore = ctx => {
+        ctx.$store.commit('product/groupFilter' , {  name : null,  id : null})
+        ctx.$store.commit('product/priceFrom' , null)
+        ctx.$store.commit('product/priceTo' , null)
+        if(ctx.$route.name !== `shop___${ctx.$i18n.locale}`){
+             ctx.$router.push({name : `shop___${ctx.$i18n.locale}` , query : {}})
+         } else {
+             addParamsToLocation(ctx , {})
+         }
+     }
+export const   setGroup = (ctx , group) => {
+    const groupFilter = {
+        id : group.id,
+        name : group.groupName
+    }
+   ctx.$store.commit('product/groupFilter' , groupFilter)
+    if(ctx.$route.name !== `shop___${ctx.$i18n.locale}`){
+         ctx.$router.push({name : `shop___${ctx.$i18n.locale}` , query : {group : group.id}})
+     } else {
+          let query = ctx.$route.query
+            query.group = group.id
+        addParamsToLocation(ctx , query)
+     }
 }

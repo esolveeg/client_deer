@@ -12,7 +12,7 @@
         hide-no-data
         hide-selected
         color="white"
-        item-text="ItemName"
+        item-text="productName"
         item-value="id"
         :placeholder="$t('search_key')"
         prepend-icon="mdi-magnify"

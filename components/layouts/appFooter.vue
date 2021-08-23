@@ -89,6 +89,8 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import {setGroup } from '@/utilities/helpers.js'
+
 export default {
     computed:{
         ...mapGetters({
@@ -118,40 +120,10 @@ export default {
     },
     methods:{
         setGroup(group){
-            
-            const groupFilter = {
-                id : group.id,
-                name: group.groupName
-            }
-            const localFilters = {
-                price : [],
-                group : groupFilter
-            }
-            
-            this.$store.commit('product/filters' , localFilters)
-             if(this.$route.name !== `shop___${this.$i18n.locale}`){
-                 this.$router.push({name : `shop___${this.$i18n.locale}` , query : {group : group.id}})
-             } else {
-                 this.addParamsToLocation(this.filtersParams)
-             }
+            console.log(group)
+            setGroup(this,group)
         },
-        addParamsToLocation(params) {
-        this.$store.dispatch('product/getProducts' , params)
-        history.pushState(
-            {},
-            null,
-            this.$route.path +
-            '?' +
-            Object.keys(params)
-                .map(key => {
-                return (
-                    encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-                )
-                })
-                .join('&')
-        )
-        window.scrollTo({ top:0, behavior: 'smooth'});
-        },
+        
     }
 }
 </script>

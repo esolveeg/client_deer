@@ -45,8 +45,6 @@ export default {
     goTo(to){
       if(to == 'categories'){
 				this.$store.commit('ui/mobileCategoriesModal', true)
-
-        console.log('categories')
         return 
       }
       // console.log(to)
