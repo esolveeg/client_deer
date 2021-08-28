@@ -1,7 +1,9 @@
-import http from '~/utilities/http.js';
+import http , {serializeQuery} from '~/utilities/http.js';
 export const state = () => ({
     settings: [],
    contacts : [],
+   authors:[],
+   authorsLoading: false,
     
     links : [],
     sliders: [],
@@ -13,6 +15,12 @@ export const state = () => ({
 export const mutations = {
     contacts(state, payload) {
         state.contacts = payload;
+    },
+    authors(state, payload) {
+        state.authors = payload;
+    },
+    authorsLoading(state, payload) {
+        state.authorsLoading = payload;
     },
     settings(state, payload) {
         state.settings = payload;
@@ -43,6 +51,12 @@ export const mutations = {
 export const getters = {
     contacts(state){
         return state.contacts
+    },
+    authorsLoading(state){
+        return state.authorsLoading
+    },
+    authors(state){
+        return state.authors
     },
     settings(state){
         return state.settings
@@ -109,6 +123,21 @@ export const actions = {
             })
             .catch((res) => {
               commit("slidersLoading", false)
+              reject(res);
+            });
+        });
+      },
+      getAuthors({commit} , payload = null){
+        commit("authorsLoading", true);
+        return new Promise((resolve, reject) => {
+            http.get(`authors/?${serializeQuery(payload)}`)
+            .then(res => {
+              commit("authorsLoading", false)
+              commit("authors", res.data)
+              resolve(res.data)
+            })
+            .catch((res) => {
+              commit("authorsLoading", false)
               reject(res);
             });
         });
