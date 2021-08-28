@@ -122,7 +122,7 @@ export default {
           })
           // console.log('selected')
           // console.log(selected)
-          this.filters.group.name = this.$i18n.locale == 'ar' ?  selected[0].GroupName : selected[0].GroupNameEn
+          this.filters.group.name = selected[0].groupName
         }
       })
     }
